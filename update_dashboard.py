@@ -30,6 +30,8 @@ SOURCES = {
     "taiex": "https://www.twse.com.tw/indicesReport/MI_5MINS_HIST",
     "tsmc": "https://www.twse.com.tw/exchangeReport/STOCK_DAY",
 }
+FOREIGN_FETCH_URL = "https://wwwc.twse.com.tw/rwd/zh/fund/BFI82U"
+BACKFILL_BATCH = 45
 
 
 def number(value: object) -> float:
@@ -96,8 +98,9 @@ def fetch_institutions(session: requests.Session, targets: list[date]) -> tuple[
     required = {"單位名稱", "買進金額", "賣出金額", "買賣差額"}
     for target in targets:
         try:
-            payload = get_json(session, SOURCES["foreign"], {
-                "response": "json", "type": "day", "dayDate": target.strftime("%Y%m%d")
+            day_text = target.strftime("%Y%m%d")
+            payload = get_json(session, FOREIGN_FETCH_URL, {
+                "response": "json", "date": day_text, "_": day_text
             })
         except requests.RequestException:
             time.sleep(0.25)
@@ -229,7 +232,8 @@ def update_official_data(history: dict[str, list[dict]]) -> list[str]:
     with requests.Session() as session:
         try:
             existing_foreign = {str(row["date"]) for row in history["foreign"]}
-            targets = sorted(set(recent + [day for day in weekdays if day.isoformat() not in existing_foreign]))
+            missing = [day for day in weekdays if day.isoformat() not in existing_foreign][:BACKFILL_BATCH]
+            targets = sorted(set(recent + missing))
             institutions, foreign = fetch_institutions(session, targets)
             history["institutions"] = merge_rows(history["institutions"], institutions, today)
             history["foreign"] = merge_rows(history["foreign"], foreign, today)
@@ -239,7 +243,7 @@ def update_official_data(history: dict[str, list[dict]]) -> list[str]:
         jobs = {
             "futures": lambda: fetch_futures(
                 session,
-                sorted(set(recent + [day for day in weekdays if day.isoformat() not in {str(row['date']) for row in history['futures']}]))
+                sorted(set(recent + [day for day in weekdays if day.isoformat() not in {str(row['date']) for row in history['futures']}][:BACKFILL_BATCH]))
             ),
             "fx": lambda: fetch_fx(session),
             "taiex": lambda: sum(
