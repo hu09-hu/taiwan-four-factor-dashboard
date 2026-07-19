@@ -21,7 +21,10 @@ HISTORY_PATH = BASE_DIR / "history.json"
 OUTPUT_PATH = BASE_DIR / "index.html"
 TAIPEI = ZoneInfo("Asia/Taipei")
 HEADERS = {
-    "User-Agent": "TaiwanMarketDashboard/2.0 (research dashboard)",
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+    ),
     "Cache-Control": "no-cache",
 }
 TIMEOUT = 40
@@ -103,7 +106,12 @@ def fetch_institutions(session: requests.Session, targets: list[date]) -> tuple[
         try:
             day_text = target.strftime("%Y%m%d")
             payload = get_json(session, FOREIGN_FETCH_URL, {
-                "response": "json", "date": day_text, "_": day_text
+                "response": "json",
+                "type": "day",
+                "dayDate": day_text,
+                "weekDate": day_text,
+                "monthDate": day_text,
+                "_": day_text,
             })
         except requests.RequestException:
             time.sleep(0.25)
