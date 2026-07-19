@@ -1,0 +1,48 @@
+name: 每日更新四因子儀表板
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 10:45 UTC = 台北 18:45，週一至週五盤後更新
+    - cron: "45 10 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 更新官方資料並產生頁面
+        run: python update_dashboard.py
+      - name: 保存最新資料
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add history.json index.html
+          git diff --cached --quiet || git commit -m "自動更新四因子資料"
+          git push
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: 發布 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
