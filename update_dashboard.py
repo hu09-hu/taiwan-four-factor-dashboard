@@ -158,7 +158,7 @@ def fetch_futures(session: requests.Session, targets: list[date]) -> list[dict]:
 
 def fetch_fx(session: requests.Session) -> list[dict]:
     rows = []
-    for page in range(1, 5):
+    for page in range(1, 14):
         response = session.get(f"https://www.cbc.gov.tw/tw/lp-645-1-{page}-20.html", headers=HEADERS, timeout=TIMEOUT)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "lxml")
@@ -196,7 +196,7 @@ def fetch_market_month(session: requests.Session, target: date, dataset: str) ->
 def merge_rows(old: list[dict], incoming: list[dict], today: date) -> list[dict]:
     by_key = {(str(row["date"]), str(row.get("name", ""))): row for row in old}
     by_key.update({(str(row["date"]), str(row.get("name", ""))): row for row in incoming})
-    month = today.month - 3
+    month = today.month - 12
     year = today.year
     if month <= 0:
         month += 12
@@ -208,10 +208,19 @@ def merge_rows(old: list[dict], incoming: list[dict], today: date) -> list[dict]
 
 def update_official_data(history: dict[str, list[dict]]) -> list[str]:
     today = datetime.now(TAIPEI).date()
-    targets = [today - timedelta(days=offset) for offset in range(8, -1, -1)]
+    cutoff = date(today.year - 1, today.month, min(today.day, calendar.monthrange(today.year - 1, today.month)[1]))
+    weekdays = []
+    cursor = cutoff
+    while cursor <= today:
+        if cursor.weekday() < 5:
+            weekdays.append(cursor)
+        cursor += timedelta(days=1)
+    recent = [today - timedelta(days=offset) for offset in range(8, -1, -1)]
     messages = []
     with requests.Session() as session:
         try:
+            existing_foreign = {str(row["date"]) for row in history["foreign"]}
+            targets = sorted(set(recent + [day for day in weekdays if day.isoformat() not in existing_foreign]))
             institutions, foreign = fetch_institutions(session, targets)
             history["institutions"] = merge_rows(history["institutions"], institutions, today)
             history["foreign"] = merge_rows(history["foreign"], foreign, today)
@@ -219,10 +228,17 @@ def update_official_data(history: dict[str, list[dict]]) -> list[str]:
         except Exception as error:
             messages.append(f"institutions:保留舊資料({type(error).__name__})")
         jobs = {
-            "futures": lambda: fetch_futures(session, targets),
+            "futures": lambda: fetch_futures(
+                session,
+                sorted(set(recent + [day for day in weekdays if day.isoformat() not in {str(row['date']) for row in history['futures']}]))
+            ),
             "fx": lambda: fetch_fx(session),
-            "taiex": lambda: fetch_market_month(session, today, "taiex"),
-            "tsmc": lambda: fetch_market_month(session, today, "tsmc"),
+            "taiex": lambda: sum(
+                (fetch_market_month(session, (today.replace(day=1) - timedelta(days=offset * 28)).replace(day=1), "taiex") for offset in range(13)), []
+            ),
+            "tsmc": lambda: sum(
+                (fetch_market_month(session, (today.replace(day=1) - timedelta(days=offset * 28)).replace(day=1), "tsmc") for offset in range(13)), []
+            ),
         }
         for name, job in jobs.items():
             try:
@@ -359,9 +375,9 @@ document.getElementById('overview-summary').innerHTML=card('正面因素',i5>0?'
 document.getElementById('model-cards').innerHTML=card('四因子總分',signed(L.score,1),stateText(L.score))+card('外資近5日',signed(L.foreign_5d,1)+' 億')+card('近5日淨空增加',signed(L.net_short_change_5d,0)+' 口','目前淨空 '+fmt(L.net_short,0)+' 口')+card('USD/TWD近5日',signed(L.fx_change_5d,2)+'%','上升＝新臺幣貶值');
 const scoreNames=['外資現貨','淨空增加','匯率','大盤指數'];plot('factor-chart',scoreNames.map((name,i)=>({{x:dates(M),y:M.map(r=>r.factor_scores[i]),name,type:'scatter',mode:'lines',line:{{color:[C.blue,C.red,C.yellow,C.violet][i],width:2}}}})),'四因子分數趨勢','分數');
 plot('score-chart',[{{x:dates(M),y:vals(M,'score'),name:'總分',type:'scatter',mode:'lines+markers',line:{{color:C.blue,width:3}}}}],'四因子總分歷史','分數');
-const fb=F.map(r=>billion(r.net_twd)),fc=fb.map((_,i)=>sum(fb.slice(0,i+1)));document.getElementById('foreign-cards').innerHTML=card('最新外資買賣超',signed(last(fb),1)+' 億')+card('近5日累計',signed(sum(fb.slice(-5)),1)+' 億')+card('近20日累計',signed(sum(fb.slice(-20)),1)+' 億')+card('三個月累計',signed(sum(fb),1)+' 億');
-plot('foreign-chart',[{{x:dates(F),y:fb,type:'bar',name:'每日',marker:{{color:fb.map(v=>v>=0?C.green:C.red)}}}},{{x:dates(F),y:fc,type:'scatter',name:'累計',yaxis:'y2',line:{{color:C.blue,width:2}}}}],'外資每日買賣超與三個月累計','億元').then(()=>Plotly.relayout('foreign-chart',{{'yaxis2.overlaying':'y','yaxis2.side':'right','yaxis2.title':'累計（億元）'}}));
-const inst={{}};N.forEach(r=>(inst[r.name]??=[]).push(r));const wanted=['外資及陸資(不含外資自營商)','投信','自營商(自行買賣)','自營商(避險)','合計'];plot('institution-chart',wanted.filter(k=>inst[k]).map((k,i)=>({{x:dates(inst[k]),y:inst[k].map(r=>billion(r.net_twd)).map((_,j,a)=>sum(a.slice(0,j+1))),name:k,type:'scatter',mode:'lines',line:{{color:[C.blue,C.red,C.yellow,C.green,C.violet][i]}}}})),'三大法人近三個月累計買賣超','億元');
+const fb=F.map(r=>billion(r.net_twd)),fc=fb.map((_,i)=>sum(fb.slice(0,i+1)));document.getElementById('foreign-cards').innerHTML=card('最新外資買賣超',signed(last(fb),1)+' 億')+card('近5日累計',signed(sum(fb.slice(-5)),1)+' 億')+card('近20日累計',signed(sum(fb.slice(-20)),1)+' 億')+card('一年累計',signed(sum(fb),1)+' 億');
+plot('foreign-chart',[{{x:dates(F),y:fb,type:'bar',name:'每日',marker:{{color:fb.map(v=>v>=0?C.green:C.red)}}}},{{x:dates(F),y:fc,type:'scatter',name:'累計',yaxis:'y2',line:{{color:C.blue,width:2}}}}],'外資每日買賣超與一年累計','億元').then(()=>Plotly.relayout('foreign-chart',{{'yaxis2.overlaying':'y','yaxis2.side':'right','yaxis2.title':'累計（億元）'}}));
+const inst={{}};N.forEach(r=>(inst[r.name]??=[]).push(r));const wanted=['外資及陸資(不含外資自營商)','投信','自營商(自行買賣)','自營商(避險)','合計'];plot('institution-chart',wanted.filter(k=>inst[k]).map((k,i)=>({{x:dates(inst[k]),y:inst[k].map(r=>billion(r.net_twd)).map((_,j,a)=>sum(a.slice(0,j+1))),name:k,type:'scatter',mode:'lines',line:{{color:[C.blue,C.red,C.yellow,C.green,C.violet][i]}}}})),'三大法人近一年累計買賣超','億元');
 const fxBy=Object.fromEntries(X.map(r=>[r.date,r.close]));plot('foreign-fx-chart',[{{x:dates(F),y:fb,name:'外資',type:'bar',marker:{{color:C.violet}}}},{{x:dates(F),y:F.map(r=>fxBy[r.date]??null),name:'USD/TWD',type:'scatter',yaxis:'y2',line:{{color:C.yellow}}}}],'外資買賣超與 USD/TWD','億元').then(()=>Plotly.relayout('foreign-fx-chart',{{'yaxis2.overlaying':'y','yaxis2.side':'right','yaxis2.title':'USD/TWD'}}));
 const unet=vals(U,'net_contracts'),ushort=vals(U,'short'),ulong=vals(U,'long');document.getElementById('futures-cards').innerHTML=card('多方未平倉',fmt(last(ulong),0)+' 口')+card('空方未平倉',fmt(last(ushort),0)+' 口')+card('淨未平倉',signed(last(unet),0)+' 口',last(unet)<0?'淨空':'淨多')+card('近5日淨空增加',signed(L.net_short_change_5d,0)+' 口');
 plot('futures-chart',[{{x:dates(U),y:ulong,name:'多方',type:'scatter',line:{{color:C.green}}}},{{x:dates(U),y:ushort,name:'空方',type:'scatter',line:{{color:C.red}}}},{{x:dates(U),y:unet,name:'淨部位',type:'scatter',line:{{color:C.blue,width:3}}}}],'外資臺股期貨未平倉','口');
