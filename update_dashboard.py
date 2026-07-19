@@ -8,6 +8,7 @@ import json
 import math
 import re
 import sqlite3
+import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -94,10 +95,15 @@ def fetch_institutions(session: requests.Session, targets: list[date]) -> tuple[
     institutions, foreign = [], []
     required = {"單位名稱", "買進金額", "賣出金額", "買賣差額"}
     for target in targets:
-        payload = get_json(session, SOURCES["foreign"], {
-            "response": "json", "type": "day", "dayDate": target.strftime("%Y%m%d")
-        })
+        try:
+            payload = get_json(session, SOURCES["foreign"], {
+                "response": "json", "type": "day", "dayDate": target.strftime("%Y%m%d")
+            })
+        except requests.RequestException:
+            time.sleep(0.25)
+            continue
         if payload.get("stat") != "OK":
+            time.sleep(0.08)
             continue
         fields = list(payload.get("fields", []))
         if not required.issubset(fields) or "單位：元" not in str(payload.get("hints", "")):
@@ -113,6 +119,7 @@ def fetch_institutions(session: requests.Session, targets: list[date]) -> tuple[
             institutions.append({"date": day, "name": name, "net_twd": net})
             if name.startswith("外資及陸資"):
                 foreign.append({"date": day, "net_twd": net})
+        time.sleep(0.08)
     return institutions, foreign
 
 
@@ -143,16 +150,18 @@ def parse_taifex(text: str) -> dict[str, object]:
 def fetch_futures(session: requests.Session, targets: list[date]) -> list[dict]:
     rows = []
     for target in targets:
-        response = session.get(SOURCES["futures"], params={
-            "doQuery": "1", "queryType": "1", "queryDate": target.strftime("%Y/%m/%d")
-        }, headers=HEADERS, timeout=TIMEOUT)
-        response.raise_for_status()
         try:
+            response = session.get(SOURCES["futures"], params={
+                "doQuery": "1", "queryType": "1", "queryDate": target.strftime("%Y/%m/%d")
+            }, headers=HEADERS, timeout=TIMEOUT)
+            response.raise_for_status()
             row = parse_taifex(response.text)
-        except ValueError:
+        except (requests.RequestException, ValueError):
+            time.sleep(0.25)
             continue
         if row["date"] == target.isoformat():
             rows.append(row)
+        time.sleep(0.12)
     return rows
 
 
