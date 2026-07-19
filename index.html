@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <title>台股四因子資金壓力模型</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root { color-scheme: dark; --bg:#07111f; --card:#0f1f33; --line:#263b59; --text:#e6eef8; --muted:#9fb0c5; --green:#10b981; --red:#ef4444; --blue:#38bdf8; --yellow:#f59e0b; --violet:#a78bfa; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(145deg,#07111f,#0b1728 55%,#101b2d); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { width:min(1100px,100%); margin:auto; padding:20px 16px 40px; }
+    h1 { margin:4px 0 6px; font-size:clamp(24px,6vw,42px); font-weight:600; }
+    .sub,.updated,.foot { color:var(--muted); }
+    .updated { margin:8px 0 18px; font-size:13px; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:14px 0; }
+    .factors { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .card { min-width:0; background:rgba(15,31,51,.88); border:1px solid var(--line); border-radius:14px; padding:15px; }
+    .label { color:var(--muted); font-size:13px; margin-bottom:6px; }
+    .value { font-size:clamp(20px,5vw,31px); font-weight:600; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+    .detail { color:var(--muted); margin-top:5px; font-size:12px; }
+    .warning { margin:12px 0; padding:12px 14px; border-radius:12px; background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.45); }
+    .chart { width:100%; min-height:410px; margin:14px 0 22px; }
+    .foot { font-size:12px; line-height:1.6; border-top:1px solid var(--line); padding-top:14px; }
+    .foot a { color:var(--blue); }
+    @media (max-width:720px) { .grid,.factors { grid-template-columns:repeat(2,minmax(0,1fr)); } .chart { min-height:360px; } }
+    @media (max-width:380px) { main { padding-left:11px; padding-right:11px; } .grid,.factors { gap:8px; } .card { padding:12px; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>台股四因子資金壓力模型</h1>
+  <div class="sub">外資現貨 × 外資近5日淨空增加 × USD/TWD × 加權指數</div>
+  <div class="updated">最新共同交易日 2026-07-17｜更新 2026-07-19 09:32（台北）</div>
+  <section class="grid" aria-label="模型摘要">
+    <div class="card"><div class="label">四因子總分</div><div class="value">-56.9</div><div class="detail">範圍 -100～+100</div></div>
+    <div class="card"><div class="label">模型判定</div><div class="value">資金壓力明顯偏空</div></div>
+    <div class="card"><div class="label">目前淨空水位</div><div class="value">86,189口</div><div class="detail">水位不參與計分</div></div>
+  </section>
+  <section class="grid factors" aria-label="四因子原始值">
+    <div class="card"><div class="label">外資近5日</div><div class="value">-3,095.2億</div></div>
+    <div class="card"><div class="label">近5日淨空增加</div><div class="value">+5,459口</div></div>
+    <div class="card"><div class="label">USD/TWD近5日</div><div class="value">+0.34%</div><div class="detail">上升＝新台幣貶值</div></div>
+    <div class="card"><div class="label">大盤近5日</div><div class="value">-5.92%</div></div>
+  </section>
+  <div class="warning">⚠ 近5日區間包含 2026-07-15 結算日；口數可能同時受契約到期與轉倉影響。</div>
+  <div id="factor-chart" class="chart" role="img" aria-label="四因子分數趨勢折線圖"></div>
+  <div id="score-chart" class="chart" role="img" aria-label="四因子總分歷史折線圖"></div>
+  <div class="foot">
+    四項各25%，採只使用當日以前資料的擴張百分位；缺值不補0。正值為資金順風，負值為資金壓力。資料來源：
+    <a href="https://www.twse.com.tw/rwd/zh/fund/BFI82U">臺灣證券交易所法人</a>、
+    <a href="https://www.taifex.com.tw/cht/3/futContractsDateExcel">臺灣期貨交易所</a>、
+    <a href="https://www.cbc.gov.tw/tw/lp-645-1-1-20.html">中央銀行匯率</a>、
+    <a href="https://www.twse.com.tw/indicesReport/MI_5MINS_HIST">加權指數</a>。資料僅供研究，不構成投資建議。
+  </div>
+</main>
+<script>
+const data={"dates":["2026-05-22","2026-05-25","2026-05-26","2026-05-27","2026-05-28","2026-05-29","2026-06-01","2026-06-02","2026-06-03","2026-06-04","2026-06-05","2026-06-08","2026-06-09","2026-06-10","2026-06-11","2026-06-12","2026-06-15","2026-06-16","2026-06-17","2026-06-18","2026-06-22","2026-06-23","2026-06-24","2026-06-25","2026-06-26","2026-06-29","2026-06-30","2026-07-01","2026-07-02","2026-07-03","2026-07-06","2026-07-07","2026-07-08","2026-07-09","2026-07-13","2026-07-14","2026-07-15","2026-07-16","2026-07-17"],"series":{"外資現貨":[25.0,57.14,86.36,95.65,70.83,72.0,57.69,44.44,46.43,20.69,-30.0,-96.77,-96.88,-96.97,-91.18,-80.0,-52.78,10.81,18.42,46.15,72.5,24.39,-59.52,-74.42,-88.64,-93.33,-84.78,-51.06,-68.75,-32.65,-54.0,-70.59,-71.15,-67.92,-53.7,-61.82,-37.5,-49.12,-81.03],"淨空增加":[55.0,-76.19,-77.27,-95.65,-95.83,-96.0,-73.08,-66.67,-46.43,-62.07,-30.0,38.71,71.88,66.67,73.53,51.43,19.44,-37.84,-28.95,-25.64,-27.5,-53.66,-92.86,-83.72,-34.09,-22.22,-28.26,42.55,18.75,-4.08,18.0,58.82,55.77,64.15,42.59,14.55,48.21,14.04,-32.76],"匯率":[25.0,47.62,86.36,95.65,62.5,64.0,34.62,-0.0,-25.0,-34.48,-50.0,-96.77,-90.62,-96.97,-79.41,-68.57,25.0,32.43,55.26,25.64,7.5,-24.39,-88.1,-97.67,-97.73,-84.44,-80.43,-34.04,-14.58,-8.16,-70.0,-98.04,-51.92,-90.57,-83.33,-43.64,8.93,-77.19,-18.97],"大盤指數":[-25.0,76.19,95.45,95.65,37.5,48.0,3.85,22.22,25.0,20.69,-50.0,-90.32,-71.88,-96.97,-91.18,-62.86,19.44,-27.03,65.79,87.18,87.5,-4.88,-45.24,-32.56,-84.09,-93.33,-63.04,-21.28,-22.92,40.82,6.0,-54.9,-71.15,-71.7,-72.22,-76.36,-30.36,-31.58,-94.83]},"totals":[20.0,26.19,47.73,47.83,18.75,22.0,5.77,-0.0,0.0,-13.79,-40.0,-61.29,-46.88,-56.06,-47.06,-40.0,2.78,-5.41,27.63,33.33,35.0,-14.63,-71.43,-72.09,-76.14,-73.33,-64.13,-15.96,-21.87,-1.02,-25.0,-41.18,-34.62,-41.51,-41.67,-41.82,-2.68,-35.96,-56.9],"settlements":["2026-05-20","2026-06-17","2026-07-15"]};
+const colors=['#38bdf8','#ef4444','#f59e0b','#a78bfa'];
+const symbols=['circle','square','diamond','triangle-up'];
+const factorTraces=Object.entries(data.series).map(([name,values],i)=>({x:data.dates,y:values,name,type:'scatter',mode:'lines+markers',line:{color:colors[i],width:2},marker:{symbol:symbols[i],size:5},hovertemplate:name+'<br>%{x}<br>%{y:+.1f}<extra></extra>'}));
+const settlementShapes=data.settlements.map(day=>({type:'line',x0:day,x1:day,y0:0,y1:1,yref:'paper',line:{color:'#64748b',width:1,dash:'dot'}}));
+const base={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#dbe7f5'},margin:{l:48,r:12,t:68,b:45},hovermode:'x unified',xaxis:{gridcolor:'#20314a'},yaxis:{range:[-105,105],gridcolor:'#20314a',zerolinecolor:'#64748b'},legend:{orientation:'h',y:1.16,x:0}};
+Plotly.newPlot('factor-chart',factorTraces,{...base,title:{text:'四因子分數趨勢',x:0},shapes:settlementShapes},{responsive:true,displaylogo:false});
+Plotly.newPlot('score-chart',[{x:data.dates,y:data.totals,name:'總分',type:'scatter',mode:'lines+markers',line:{color:'#38bdf8',width:3},marker:{size:5},hovertemplate:'%{x}<br>總分 %{y:+.1f}<extra></extra>'}],{...base,title:{text:'四因子總分歷史',x:0},showlegend:false},{responsive:true,displaylogo:false});
+</script>
+</body>
+</html>
