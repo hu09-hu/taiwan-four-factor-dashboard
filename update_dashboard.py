@@ -37,7 +37,7 @@ SOURCES = {
     "tsmc": "https://www.twse.com.tw/exchangeReport/STOCK_DAY",
 }
 FOREIGN_FETCH_URL = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
-BACKFILL_BATCH = 70
+BACKFILL_BATCH = 150
 
 
 def number(value: object) -> float:
