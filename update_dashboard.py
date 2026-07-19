@@ -20,7 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent
 HISTORY_PATH = BASE_DIR / "history.json"
 OUTPUT_PATH = BASE_DIR / "index.html"
 TAIPEI = ZoneInfo("Asia/Taipei")
-HEADERS = {"User-Agent": "TaiwanMarketDashboard/2.0 (research dashboard)"}
+HEADERS = {
+    "User-Agent": "TaiwanMarketDashboard/2.0 (research dashboard)",
+    "Cache-Control": "no-cache",
+}
 TIMEOUT = 40
 DATASETS = ("foreign", "institutions", "futures", "fx", "taiex", "tsmc")
 SOURCES = {
@@ -30,8 +33,8 @@ SOURCES = {
     "taiex": "https://www.twse.com.tw/indicesReport/MI_5MINS_HIST",
     "tsmc": "https://www.twse.com.tw/exchangeReport/STOCK_DAY",
 }
-FOREIGN_FETCH_URL = "https://wwwc.twse.com.tw/rwd/zh/fund/BFI82U"
-BACKFILL_BATCH = 45
+FOREIGN_FETCH_URL = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
+BACKFILL_BATCH = 70
 
 
 def number(value: object) -> float:
