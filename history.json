@@ -2113,6 +2113,210 @@
   ],
   "futures": [
     {
+      "date": "2025-07-21",
+      "long": 18223,
+      "short": 64779,
+      "net_contracts": -46556
+    },
+    {
+      "date": "2025-07-22",
+      "long": 20179,
+      "short": 64773,
+      "net_contracts": -44594
+    },
+    {
+      "date": "2025-07-23",
+      "long": 19143,
+      "short": 66984,
+      "net_contracts": -47841
+    },
+    {
+      "date": "2025-07-24",
+      "long": 19288,
+      "short": 67218,
+      "net_contracts": -47930
+    },
+    {
+      "date": "2025-07-25",
+      "long": 20113,
+      "short": 67530,
+      "net_contracts": -47417
+    },
+    {
+      "date": "2025-07-28",
+      "long": 21261,
+      "short": 66240,
+      "net_contracts": -44979
+    },
+    {
+      "date": "2025-07-29",
+      "long": 21498,
+      "short": 62374,
+      "net_contracts": -40876
+    },
+    {
+      "date": "2025-07-30",
+      "long": 22950,
+      "short": 60781,
+      "net_contracts": -37831
+    },
+    {
+      "date": "2025-07-31",
+      "long": 26613,
+      "short": 60257,
+      "net_contracts": -33644
+    },
+    {
+      "date": "2025-08-01",
+      "long": 19393,
+      "short": 58930,
+      "net_contracts": -39537
+    },
+    {
+      "date": "2025-08-04",
+      "long": 19178,
+      "short": 58258,
+      "net_contracts": -39080
+    },
+    {
+      "date": "2025-08-05",
+      "long": 22761,
+      "short": 58090,
+      "net_contracts": -35329
+    },
+    {
+      "date": "2025-08-06",
+      "long": 20044,
+      "short": 56424,
+      "net_contracts": -36380
+    },
+    {
+      "date": "2025-08-07",
+      "long": 24437,
+      "short": 59226,
+      "net_contracts": -34789
+    },
+    {
+      "date": "2025-08-08",
+      "long": 21099,
+      "short": 58689,
+      "net_contracts": -37590
+    },
+    {
+      "date": "2025-08-11",
+      "long": 21672,
+      "short": 57247,
+      "net_contracts": -35575
+    },
+    {
+      "date": "2025-08-12",
+      "long": 21633,
+      "short": 56935,
+      "net_contracts": -35302
+    },
+    {
+      "date": "2025-08-13",
+      "long": 22724,
+      "short": 56294,
+      "net_contracts": -33570
+    },
+    {
+      "date": "2025-08-14",
+      "long": 21900,
+      "short": 56279,
+      "net_contracts": -34379
+    },
+    {
+      "date": "2025-08-15",
+      "long": 20968,
+      "short": 55175,
+      "net_contracts": -34207
+    },
+    {
+      "date": "2025-08-18",
+      "long": 26199,
+      "short": 55825,
+      "net_contracts": -29626
+    },
+    {
+      "date": "2025-08-19",
+      "long": 27019,
+      "short": 59652,
+      "net_contracts": -32633
+    },
+    {
+      "date": "2025-08-20",
+      "long": 17105,
+      "short": 52248,
+      "net_contracts": -35143
+    },
+    {
+      "date": "2025-08-21",
+      "long": 19173,
+      "short": 49560,
+      "net_contracts": -30387
+    },
+    {
+      "date": "2025-08-22",
+      "long": 21716,
+      "short": 48451,
+      "net_contracts": -26735
+    },
+    {
+      "date": "2025-08-25",
+      "long": 21711,
+      "short": 47320,
+      "net_contracts": -25609
+    },
+    {
+      "date": "2025-08-26",
+      "long": 20592,
+      "short": 47724,
+      "net_contracts": -27132
+    },
+    {
+      "date": "2025-08-27",
+      "long": 22813,
+      "short": 47584,
+      "net_contracts": -24771
+    },
+    {
+      "date": "2025-08-28",
+      "long": 21168,
+      "short": 47255,
+      "net_contracts": -26087
+    },
+    {
+      "date": "2025-08-29",
+      "long": 21342,
+      "short": 47651,
+      "net_contracts": -26309
+    },
+    {
+      "date": "2025-09-01",
+      "long": 21375,
+      "short": 48039,
+      "net_contracts": -26664
+    },
+    {
+      "date": "2025-09-02",
+      "long": 23319,
+      "short": 47614,
+      "net_contracts": -24295
+    },
+    {
+      "date": "2025-09-03",
+      "long": 23273,
+      "short": 48061,
+      "net_contracts": -24788
+    },
+    {
+      "date": "2025-09-04",
+      "long": 23910,
+      "short": 47413,
+      "net_contracts": -23503
+    },
+    {
       "date": "2026-04-20",
       "long": 18280,
       "short": 60898,
