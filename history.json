@@ -2485,6 +2485,168 @@
       "net_contracts": -25586
     },
     {
+      "date": "2025-10-20",
+      "long": 17104,
+      "short": 42355,
+      "net_contracts": -25251
+    },
+    {
+      "date": "2025-10-21",
+      "long": 18684,
+      "short": 41966,
+      "net_contracts": -23282
+    },
+    {
+      "date": "2025-10-22",
+      "long": 16010,
+      "short": 42105,
+      "net_contracts": -26095
+    },
+    {
+      "date": "2025-10-23",
+      "long": 16016,
+      "short": 40323,
+      "net_contracts": -24307
+    },
+    {
+      "date": "2025-10-27",
+      "long": 17910,
+      "short": 42121,
+      "net_contracts": -24211
+    },
+    {
+      "date": "2025-10-28",
+      "long": 16317,
+      "short": 43771,
+      "net_contracts": -27454
+    },
+    {
+      "date": "2025-10-29",
+      "long": 18655,
+      "short": 43076,
+      "net_contracts": -24421
+    },
+    {
+      "date": "2025-10-30",
+      "long": 18258,
+      "short": 43004,
+      "net_contracts": -24746
+    },
+    {
+      "date": "2025-10-31",
+      "long": 19663,
+      "short": 42599,
+      "net_contracts": -22936
+    },
+    {
+      "date": "2025-11-03",
+      "long": 17236,
+      "short": 45116,
+      "net_contracts": -27880
+    },
+    {
+      "date": "2025-11-04",
+      "long": 16846,
+      "short": 44688,
+      "net_contracts": -27842
+    },
+    {
+      "date": "2025-11-05",
+      "long": 15145,
+      "short": 47233,
+      "net_contracts": -32088
+    },
+    {
+      "date": "2025-11-06",
+      "long": 17162,
+      "short": 47079,
+      "net_contracts": -29917
+    },
+    {
+      "date": "2025-11-07",
+      "long": 16556,
+      "short": 47376,
+      "net_contracts": -30820
+    },
+    {
+      "date": "2025-11-10",
+      "long": 17333,
+      "short": 47922,
+      "net_contracts": -30589
+    },
+    {
+      "date": "2025-11-11",
+      "long": 17165,
+      "short": 48695,
+      "net_contracts": -31530
+    },
+    {
+      "date": "2025-11-12",
+      "long": 19241,
+      "short": 49205,
+      "net_contracts": -29964
+    },
+    {
+      "date": "2025-11-13",
+      "long": 18387,
+      "short": 49901,
+      "net_contracts": -31514
+    },
+    {
+      "date": "2025-11-14",
+      "long": 18329,
+      "short": 52924,
+      "net_contracts": -34595
+    },
+    {
+      "date": "2025-11-17",
+      "long": 19298,
+      "short": 50824,
+      "net_contracts": -31526
+    },
+    {
+      "date": "2025-11-18",
+      "long": 16232,
+      "short": 51279,
+      "net_contracts": -35047
+    },
+    {
+      "date": "2025-11-19",
+      "long": 15392,
+      "short": 46439,
+      "net_contracts": -31047
+    },
+    {
+      "date": "2025-11-20",
+      "long": 18243,
+      "short": 42410,
+      "net_contracts": -24167
+    },
+    {
+      "date": "2025-11-21",
+      "long": 15579,
+      "short": 48787,
+      "net_contracts": -33208
+    },
+    {
+      "date": "2025-11-24",
+      "long": 17426,
+      "short": 48612,
+      "net_contracts": -31186
+    },
+    {
+      "date": "2025-11-25",
+      "long": 17872,
+      "short": 47576,
+      "net_contracts": -29704
+    },
+    {
+      "date": "2025-11-26",
+      "long": 19514,
+      "short": 48171,
+      "net_contracts": -28657
+    },
+    {
       "date": "2026-04-20",
       "long": 18280,
       "short": 60898,
