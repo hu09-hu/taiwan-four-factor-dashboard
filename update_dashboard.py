@@ -196,7 +196,13 @@ def fetch_market_month(session: requests.Session, target: date, dataset: str) ->
 def merge_rows(old: list[dict], incoming: list[dict], today: date) -> list[dict]:
     by_key = {(str(row["date"]), str(row.get("name", ""))): row for row in old}
     by_key.update({(str(row["date"]), str(row.get("name", ""))): row for row in incoming})
-    cutoff = (today - timedelta(days=110)).isoformat()
+    month = today.month - 3
+    year = today.year
+    if month <= 0:
+        month += 12
+        year -= 1
+    cutoff_day = min(today.day, calendar.monthrange(year, month)[1])
+    cutoff = date(year, month, cutoff_day).isoformat()
     return [by_key[key] for key in sorted(by_key) if key[0] >= cutoff]
 
 
